@@ -1,3 +1,0 @@
-/Users/rayhanmoidu/Documents/TestingLibrary/MeshGeneration/build/CMakeFiles/MeshGeneration.dir
-/Users/rayhanmoidu/Documents/TestingLibrary/MeshGeneration/build/CMakeFiles/edit_cache.dir
-/Users/rayhanmoidu/Documents/TestingLibrary/MeshGeneration/build/CMakeFiles/rebuild_cache.dir
