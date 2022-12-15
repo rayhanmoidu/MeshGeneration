@@ -125,7 +125,7 @@ void Algorithm::warpPerimeterTriangles() {
                     std::pair<Point, Point> cutpointBounds = warpingDestination.getBounds();
                     float edgeLength = sqrt(((cutpointBounds.first.getX() - cutpointBounds.second.getX())*(cutpointBounds.first.getX() - cutpointBounds.second.getX())) + ((cutpointBounds.first.getY() - cutpointBounds.second.getY())*(cutpointBounds.first.getY() - cutpointBounds.second.getY())));
                     
-                    if (warpingDistance < alpha*edgeLength) {
+                    if (warpingDistance < 0) {
                         for (int k = 0; k < trianglesSharingVertex.size(); k++) {
                             int warpingDestinationIndex = baseTiling->check_addVertex_getIndex(warpingDestination);
                             trianglesSharingVertex[k]->warpVertexToCutpoint(curPoint, warpingDestination, warpingDestinationIndex);
@@ -147,11 +147,20 @@ void Algorithm::warpPerimeterTriangles() {
     }
 }
 
+vector<Triangle*> removeTriangleFromVector(vector<Triangle*> vec, Triangle* tri) {
+    vector<Triangle*> outVec;
+    for (int i = 0; i < vec.size(); i++) {
+        if (vec[i]!=tri) outVec.push_back(vec[i]);
+    }
+    return outVec;
+}
+
 void Algorithm::clipPerimeterTriangles() {
-    vector<Triangle*> perimeterTriangles = getPerimeterTrianglesForProcessing();
+    vector<Triangle*> perimeterTrianglesToProcess = getPerimeterTrianglesForProcessing();
+    vector<Triangle> toRemove;
     
-    for (int i = 0; i < perimeterTriangles.size(); i++) {
-        Triangle *curTriangle = perimeterTriangles[i];
+    while(perimeterTrianglesToProcess.size()>0) {
+        Triangle *curTriangle = perimeterTrianglesToProcess[0];
         vector<Point> trianglePoints = curTriangle->getPoints();
         vector<vector<Point> > slicedPoints = sliceTrianglePointsBySign(trianglePoints);
         
@@ -171,7 +180,9 @@ void Algorithm::clipPerimeterTriangles() {
                 
                 Triangle newTriangle = Triangle(cp1, cp2, positiveVertices[0], cp1Index, cp2Index, posV0Index);
                 processedTriangles.push_back(newTriangle);
+                toRemove.push_back(*curTriangle);
             } else if (negativeVertices.size()==1) {
+                
                 Point p1 = interpolateCutpoint(positiveVertices[0], negativeVertices[0]);
                 Cutpoint cp1(p1.getX(), p1.getY(), positiveVertices[0], negativeVertices[0]);
                 Point p2 = interpolateCutpoint(positiveVertices[1], negativeVertices[0]);
@@ -186,6 +197,7 @@ void Algorithm::clipPerimeterTriangles() {
                 Triangle newTriangle2 = Triangle(cp1, cp2, positiveVertices[1], cp1Index, cp2Index, posV1Index);
                 
                 // find angle at posvertex0 and cp2
+                toRemove.push_back(*curTriangle);
                 
                 if (doesPassDelaunaysCondition(cp1, cp2, positiveVertices[0], positiveVertices[1])) {
                     processedTriangles.push_back(newTriangle1);
@@ -198,8 +210,22 @@ void Algorithm::clipPerimeterTriangles() {
                 }
             }
         }
+        perimeterTrianglesToProcess = removeTriangleFromVector(perimeterTrianglesToProcess, curTriangle);
     }
-    filterOutNegativeTriangles();
+    
+    vector<Triangle> finals;
+    for (int i = 0; i < processedTriangles.size(); i++) {
+        bool shouldAdd=true;
+        for (int j = 0; j < toRemove.size(); j++) {
+            if (toRemove[j].doIndicesMatch(processedTriangles[i])) {
+                    shouldAdd=false;
+                    break;
+            }
+        }
+        if (shouldAdd) finals.push_back(processedTriangles[i]);
+    }
+
+    processedTriangles = finals;
 }
 
 bool Algorithm::doesPassDelaunaysCondition(Point cp1, Point cp2, Point pos1, Point pos2) {

@@ -27,6 +27,7 @@ public:
     vector<int> getIndices();
     
     bool operator == (Triangle &obj);
+    bool doIndicesMatch(Triangle obj);
     
 private:
     float applyCosineLaw(float, float, float);

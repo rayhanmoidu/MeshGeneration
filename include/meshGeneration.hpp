@@ -21,7 +21,7 @@ enum TilingType {ISOSCELES, EQUILATERAL, EQUILATERAL_ADAPTIVE, ISOSCELES_SINGLE_
 enum RatioType {MAX, MIN};
 int getCellToTriangleSizeRatio(TilingType tilingType, RatioType ratioType);
 
-const float alpha = 1;
+const float alpha = 0.25;
 
 // Refines around surface
 pair<vector<pair<float, float> >, vector<vector<int> > > generateMesh(float (*signedDistanceFunction)(float, float), float isosurfaceWidth, float isosurfaceHeight, float originX, float originY, TilingType tilingType, float minimumTriangleSideLength);

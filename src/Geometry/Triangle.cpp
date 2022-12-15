@@ -152,3 +152,11 @@ vector<float> Triangle::computeAngles() {
     
     return angles;
 }
+
+bool Triangle::doIndicesMatch(Triangle obj) {
+    bool pointsMatch1 = (i1==obj.i1) || (i1==obj.i2) || (i1==obj.i3);
+    bool pointsMatch2 = (i2==obj.i1) || (i2==obj.i2) || (i2==obj.i3);
+    bool pointsMatch3 = (i3==obj.i1) || (i3==obj.i2) || (i3==obj.i3);
+
+    return (pointsMatch1 && pointsMatch2 && pointsMatch3);
+}

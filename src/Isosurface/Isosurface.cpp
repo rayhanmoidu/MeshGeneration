@@ -8,7 +8,7 @@
 #include "Isosurface.hpp"
 
 Isosurface::Isosurface() {
-    
+
 }
 
 Isosurface::Isosurface(float (*func)(float, float), float oX, float oY) {
@@ -22,7 +22,7 @@ float Isosurface::signedDistanceFunction(Point p) {
 }
 
 int Isosurface::evaluatePoint(Point p) {
-    if (signedDistanceFunction(p)==0) return 0;
+    if (signedDistanceFunction(p)<0) return 1;
     if (signedDistanceFunction(p)>0) return -1;
-    return 1;
+    return 0;
 }
