@@ -152,6 +152,7 @@ output = generateMesh(&signedDistanceFunction, 500, 500, -250, -250, ALL_ACUTE_A
 ## Conclusion
 
 Created by Rayhan Moidu under the supervision of Professor Christopher Batty. 
+
 Computational Motion Group, University of Waterloo.
 
 Sources: 
