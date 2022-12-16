@@ -1,7 +1,7 @@
 #include "meshGeneration.hpp"
 
 // should floor
-int getCellToTriangleSizeRatio(TilingType tilingType, RatioType ratioType) {
+float getCellToTriangleSizeRatio(TilingType tilingType, RatioType ratioType) {
     if (ratioType==MAX) {
         if (tilingType==EQUILATERAL_ADAPTIVE) return 1; // minimum side length is minimum cell dimension
         if (tilingType==ISOSCELES_SINGLE_ADAPTIVE) return 1/sqrt(2);

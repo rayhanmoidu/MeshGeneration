@@ -19,7 +19,7 @@
 
 enum TilingType {ISOSCELES, EQUILATERAL, EQUILATERAL_ADAPTIVE, ISOSCELES_SINGLE_ADAPTIVE, ISOSCELES_DOUBLE_ADAPTIVE, ALL_ACUTE_ADAPTIVE };
 enum RatioType {MAX, MIN};
-int getCellToTriangleSizeRatio(TilingType tilingType, RatioType ratioType);
+float getCellToTriangleSizeRatio(TilingType tilingType, RatioType ratioType);
 
 const float alpha = 0.25;
 
