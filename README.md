@@ -1,5 +1,16 @@
 # MeshGeneration
-The purpose of this library is to generate 2D triangular meshes for user-defined isosurfaces. Users may also specify triangle side length bounds in manually defined regions of the isosurface. 
+This library provides a 2D implementation of isosurface stuffing with support for different choices of the initial background tiling. 
+<br/>
+<br/>
+Users have the ability to:
+- Define custom isosurfaces 
+- Decide upon the initial background tiling type
+- Manually specify triangle side length bounds within stated regions of the isosurface. Note that these bounds pertain to the generation of the background tiling, meaning that the stuffing algorithm may impede upon these limits causing slight deviations in the output mesh. 
+
+###  Example:
+<img width="419" alt="Screen Shot 2022-12-24 at 5 29 31 PM" src="https://user-images.githubusercontent.com/54902342/209452524-178da1e8-56b9-40cc-af8d-655af1f329d3.png">
+
+## Initial Tilings
 
 Users can choose between 6 initial tilings to initiate the mesh generation with. Examples of each are shown below, each with different angle distribution results. Note that each bar of the histogram represents a window of 10 degrees, and the bars coloured red occur at a frequency *significantly* higher than the values represented in grey.
 
@@ -73,10 +84,10 @@ Inputs:
 ### Output
 The output is a pair
   - The first value is a vector of float pairs, representing the list of vertices that compose the resulting mesh
-  - The second value is a vector of integer triplets, where each triplet represents a traingle in the resulting mesh (note that each triplet is a vector with fixed size 3). Each integer value in the triplet points to a unique element in the list of vertices.
+  - The second value is a vector of integer triplets, where each triplet represents a triangle in the resulting mesh (note that each triplet is a vector with fixed size 3). Each integer value in the triplet points to a unique element in the list of vertices.
 
 ## Example
-![Screen Shot 2022-12-15 at 9 21 24 PM](https://user-images.githubusercontent.com/54902342/208007189-a58e0572-4498-4f44-aed5-bf93ce957c40.png)
+<img width="777" alt="Screen Shot 2022-12-24 at 5 11 14 PM" src="https://user-images.githubusercontent.com/54902342/209452057-86b910d0-f223-4b6b-bb95-d717f0ae14be.png">
 
 
 ### Example 1: Isosurface Refinement (Overload 1)
@@ -95,7 +106,7 @@ Note that if the circle were to be transformed (translated, rotated, etc), this 
 
 </br>
 
-By inspection, we can also obtain the following parameters (properties of the bounding box, in blue):
+Ideally, one would pad the bounding box to allow the initial triangular tiling to overflow beyond the isosurface itself. This is not mandatory, but is strongly recommended. By inspection, we see that this padded bounding box (the blue square in the example image) imparts the following parameters:
 - `isosurfaceWidth = 500`
 - `isosurfaceHeight = 500`
 - `originX = -250`
@@ -105,15 +116,21 @@ By inspection, we can also obtain the following parameters (properties of the bo
 
 The tilingType is chosen by the user. Say the desired tiling is Adaptive All-Acute. As such, `tilingType = ALL_ACUTE_ADAPTIVE`.
 
-The minimumTriangleSideLength is also chosen by the user. Say the desired minimum threshold is 10. As such, `minimumTriangleSideLength = 10`.
+The minimumTriangleSideLength is also chosen by the user. Say the desired minimum threshold is 5. As such, `minimumTriangleSideLength = 5`.
 
 </br>
 
 This leaves us with the following function call:
 ```
 pair<vector<pair<float, float>>, vector<vector<int>>> output;
-output = generateMesh(&signedDistanceFunction, 500, 500, -250, -250, ALL_ACUTE_ADAPTIVE, 10);
+output = generateMesh(&signedDistanceFunction, 500, 500, -250, -250, ALL_ACUTE_ADAPTIVE, 5);
 ```
+
+And here is the resultant mesh:
+<br/>
+<img width="492" alt="Screen Shot 2022-12-24 at 5 47 49 PM" src="https://user-images.githubusercontent.com/54902342/209452674-5bc1bde6-6e2e-4e24-bf17-c4037ea8cd44.png">
+
+
 
 ### Example 2: Manual Refinement (Overload 2)
 The inputs will be the exact same as in example 1, except we will now provide both the `float (*sizingFunction)(float, float)` and `float maxSizingRateOfChange`, rather than the original final parameter, `minimumTriangleSideLength`.
@@ -148,6 +165,11 @@ This leaves us with the following function call:
 pair<vector<pair<float, float>>, vector<vector<int>>> output;
 output = generateMesh(&signedDistanceFunction, 500, 500, -250, -250, ALL_ACUTE_ADAPTIVE, &sizingFunction, 20);
 ```
+
+And here is the resultant mesh:
+<br/>
+<img width="478" alt="Screen Shot 2022-12-24 at 5 32 17 PM" src="https://user-images.githubusercontent.com/54902342/209452474-71c68d4f-ca8d-43b5-8647-fb5050f92f0b.png">
+
 
 ## Conclusion
 
